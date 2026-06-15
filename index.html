@@ -220,9 +220,14 @@
       .then(function(d){
         ax.disabled=false;ax.textContent='一键自动提取';
         if(d&&d.ok){
-          if(d.title)document.getElementById('in-title').value=d.title;
+          var cap=(d.caption||'').trim();
+          var hi=cap.indexOf('#');
+          var desc=hi>=0?cap.slice(0,hi).trim():cap;
+          var tags=hi>=0?cap.slice(hi).trim():'';
+          document.getElementById('in-title').value=desc||d.title||'';
+          document.getElementById('in-desc').value=tags;
           document.getElementById('in-body').value=(d.transcript&&d.transcript.length>10)?d.transcript:(d.content||'');
-          setStatus('✅ 已提取逐字稿并填入下面，正在自动检测…','var(--ok)');
+          setStatus('✅ 已提取标题/描述/标签/逐字稿并填入，正在自动检测…','var(--ok)');
           run();
         } else {
           setStatus('提取失败：'+((d&&d.error)||'未知')+'。可改用下面的免费网页提取，或稍后重试。','var(--danger)');
