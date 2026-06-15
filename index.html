@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>短视频带货·文案违规检测</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --line:#e6e8ec; --ink:#1c1f23; --mut:#6b7178;
+    --brand:#2b6cf6; --brand-d:#1a4fd0; --danger:#d83a3a; --danger-bg:#fdeaea;
+    --warn:#b8741a; --warn-bg:#fbf0df; --ok:#1f9a6d; --ok-bg:#e6f6ef;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;}
+  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+  header{text-align:center;padding:14px 0 6px;}
+  header h1{font-size:22px;margin:0 0 4px;font-weight:600;}
+  header p{margin:0;color:var(--mut);font-size:14px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px;margin-top:14px;}
+  .step{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;margin-bottom:10px;}
+  .num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;align-items:center;justify-content:center;font-size:13px;}
+  label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px;}
+  input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;background:#fbfbfc;color:var(--ink);}
+  textarea{resize:vertical;}
+  input:focus,textarea:focus{outline:none;border-color:var(--brand);background:#fff;}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  button,a.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit;}
+  button:hover,a.btn:hover{background:#f0f2f5;}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff;}
+  button.primary:hover{background:var(--brand-d);}
+  .hint{font-size:12.5px;color:var(--mut);margin-top:8px;}
+  .hint b{color:var(--ink);font-weight:600;}
+  .verdict{padding:12px 14px;border-radius:10px;font-size:15px;margin-top:12px;display:none;}
+  .v-ok{background:var(--ok-bg);color:var(--ok);}
+  .v-bad{background:var(--danger-bg);color:var(--danger);}
+  .echo{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfbfc;font-size:15px;white-space:pre-wrap;display:none;}
+  mark{padding:0 2px;border-radius:3px;background:var(--danger-bg);color:var(--danger);font-weight:600;}
+  mark.w{background:var(--warn-bg);color:var(--warn);}
+  .hits{margin-top:12px;display:none;}
+  .hit{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:14px;}
+  .tag{flex:none;font-size:12px;padding:1px 8px;border-radius:20px;}
+  .t-red{background:var(--danger-bg);color:var(--danger);}
+  .t-amber{background:var(--warn-bg);color:var(--warn);}
+  .swatch{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .pill{font-size:12px;padding:3px 10px;border-radius:20px;background:#eef1f5;color:var(--mut);cursor:pointer;}
+  .pill:hover{background:#e2e6ec;}
+  footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px;line-height:1.7;}
+  .gen-out{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfbfc;font-size:15px;min-height:24px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>短视频带货 · 文案违规检测</h1>
+    <p>抖音文案提取 + 疗效/极限词违规自查，发布前过一遍</p>
+  </header>
+
+  <div class="card">
+    <div class="step"><span class="num">1</span>提取抖音文字</div>
+    <label>粘贴抖音作品链接</label>
+    <input type="text" id="dy-link" placeholder="例：https://v.douyin.com/xxxxxx/" />
+    <div class="btns">
+      <button id="copy-link">复制链接</button>
+      <a class="btn" href="https://www.qingdou.vip/pctool/text-extract" target="_blank" rel="noopener">用「轻抖」网页提取 ↗</a>
+    </div>
+    <div class="hint">
+      口播文字纯网页提不出来（要语音识别），用免费工具提一下再粘到下面第2步：<br>
+      · <b>提词匠</b>（微信小程序，最快）：微信搜「提词匠」→ 视频文案提取 → 选抖音 → 粘链接 → 一键提取<br>
+      · 或点上面<b>「轻抖」网页</b>提取。提到的文字复制好，填进下面。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="num">2</span>违规检测</div>
+    <label>标题</label>
+    <textarea id="in-title" rows="2" placeholder="把作品标题粘这里"></textarea>
+    <label>描述 / 话题</label>
+    <textarea id="in-desc" rows="2" placeholder="把描述、话题标签粘这里"></textarea>
+    <label>口播文案（提词匠提取出来的内容）</label>
+    <textarea id="in-body" rows="5" placeholder="把口播文字粘这里——这里最容易藏违规词"></textarea>
+    <div class="btns">
+      <button class="primary" id="check">开始检测</button>
+      <button id="clear">清空</button>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="hits" id="hits"></div>
+    <div class="echo" id="echo"></div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="num">3</span>顺手生成一条合规标题</div>
+    <div class="gen-out" id="gen-out">点下面按钮，随机出一条合规卖货标题</div>
+    <div class="btns">
+      <button id="gen">换一条标题</button>
+      <button id="gen-copy">复制</button>
+    </div>
+    <div class="hint">公式：产地情怀 + 工艺口感 + 稀缺 + 价格锚 + 催单（价格自己改）。卖点靠「好物/稀缺/情怀」，不碰疗效。</div>
+  </div>
+
+  <footer>
+    本工具仅做关键词初筛，不代表平台最终判定；最终以抖音审核为准。<br>
+    所售为食品/保健食品，非药品，不替代医疗，请均衡饮食、理性消费。
+  </footer>
+</div>
+
+<script>
+(function(){
+  var RED = {
+    "疗效医疗":["治疗","治病","根治","治愈","疗效","药效","主治","消炎","杀菌","排毒","壮阳","补肾","肾虚","肾亏","降血糖","降血压","降血脂","降三高","三高","抗癌","防癌","增强免疫","提高免疫","免疫力","抗衰老","延缓衰老","包治","治愈率","药用"],
+    "医疗替代":["替代药物","代替药物","代替药","无毒副作用","无副作用","纯天然无害","不吃药","停药"],
+    "极限绝对":["最有效","最好","最佳","最强","第一","顶级","极致","绝对","100%","百分百","百分之百","一定有效","一定能","必有效","永不复发","永不","神效","特效","唯一","首选","包好","包瘦"]
+  };
+  var AMBER = {
+    "夸大慎用":["改善","缓解","调理","修复","增强体质","祛湿","去湿","养肾","养肝","降火","提升免疫","养生功效","药食同源功效","效果显著","立竿见影","快速见效","几天见效"]
+  };
+  function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+
+  function run(){
+    var fields=[["标题","in-title"],["描述","in-desc"],["口播文案","in-body"]];
+    var all=[]; var any=false;
+    var hits=[]; // {word,cat,level}
+    var seen={};
+    var echoHtml="";
+    fields.forEach(function(f){
+      var v=(document.getElementById(f[1]).value||"");
+      if(v.trim()) any=true;
+      var marked=esc(v);
+      // 红
+      Object.keys(RED).forEach(function(cat){
+        RED[cat].forEach(function(w){
+          if(v.indexOf(w)>=0){
+            if(!seen[w]){seen[w]=1;hits.push({word:w,cat:cat,level:"red"});}
+            marked=marked.split(esc(w)).join('<mark>'+esc(w)+'</mark>');
+          }
+        });
+      });
+      // 黄
+      Object.keys(AMBER).forEach(function(cat){
+        AMBER[cat].forEach(function(w){
+          if(v.indexOf(w)>=0){
+            if(!seen[w]){seen[w]=1;hits.push({word:w,cat:cat,level:"amber"});}
+            marked=marked.split(esc(w)).join('<mark class="w">'+esc(w)+'</mark>');
+          }
+        });
+      });
+      if(v.trim()) echoHtml+='<div style="color:#6b7178;font-size:13px;margin:6px 0 2px;">【'+f[0]+'】</div>'+marked;
+    });
+
+    var verdict=document.getElementById('verdict');
+    var hitsEl=document.getElementById('hits');
+    var echo=document.getElementById('echo');
+    if(!any){
+      verdict.style.display='block';verdict.className='verdict v-bad';verdict.textContent='先粘点文案进来再检测';
+      hitsEl.style.display='none';echo.style.display='none';return;
+    }
+    var reds=hits.filter(function(h){return h.level==='red';});
+    var ambers=hits.filter(function(h){return h.level==='amber';});
+    verdict.style.display='block';
+    if(reds.length===0 && ambers.length===0){
+      verdict.className='verdict v-ok';
+      verdict.innerHTML='✅ 没扫到违规词，相对安全，可以发。（仍以平台审核为准）';
+    } else {
+      verdict.className='verdict v-bad';
+      verdict.innerHTML='⚠️ 发现 <b>'+reds.length+'</b> 个高危词'+(ambers.length?('、<b>'+ambers.length+'</b> 个慎用词'):'')+'，建议改完再发。';
+    }
+    if(hits.length){
+      var html='';
+      var sug={"疗效医疗":"删掉，改说「好东西/好食材/口感」等非疗效说法","医疗替代":"删掉，绝不能暗示替代药物或停药","极限绝对":"广告法禁用，去掉绝对化词","夸大慎用":"保健品慎用，能删就删或弱化"};
+      hits.forEach(function(h){
+        var t=h.level==='red'?'t-red':'t-amber';
+        html+='<div class="hit"><span class="tag '+t+'">'+h.cat+'</span><div><b>'+esc(h.word)+'</b> — '+sug[h.cat]+'</div></div>';
+      });
+      hitsEl.innerHTML=html;hitsEl.style.display='block';
+    } else { hitsEl.style.display='none'; }
+    echo.innerHTML=echoHtml;echo.style.display='block';
+  }
+  document.getElementById('check').onclick=run;
+  document.getElementById('clear').onclick=function(){
+    ['in-title','in-desc','in-body'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('verdict').style.display='none';
+    document.getElementById('hits').style.display='none';
+    document.getElementById('echo').style.display='none';
+  };
+  document.getElementById('copy-link').onclick=function(){
+    var v=document.getElementById('dy-link').value;
+    if(v&&navigator.clipboard){navigator.clipboard.writeText(v);this.textContent='已复制';var t=this;setTimeout(function(){t.textContent='复制链接';},1200);}
+  };
+
+  var A=["九华山黄精","老祖宗的好食材","药食同源的黄精","自己人的口粮黄精","正宗九华山多花黄精"];
+  var B=["九蒸九晒","软糯香甜","香甜回甘不剌嗓","古法九蒸九晒","每天嚼两块当养生"];
+  var C=["数量有限","源头直发不掺假","卖完这批就没了","限量供应"];
+  var D=["99元6包","自己人价99元6包"];
+  var E=["囤起来！","需要的备上","赶紧上车","囤起来别犹豫"];
+  function pk(a){return a[Math.floor(Math.random()*a.length)];}
+  var go=document.getElementById('gen-out');
+  function gen(){go.textContent=pk(A)+'，'+pk(B)+'，'+pk(C)+'，'+pk(D)+'，'+pk(E);}
+  document.getElementById('gen').onclick=gen;
+  document.getElementById('gen-copy').onclick=function(){if(navigator.clipboard){navigator.clipboard.writeText(go.textContent);this.textContent='已复制';var t=this;setTimeout(function(){t.textContent='复制';},1200);}};
+})();
+</script>
+</body>
+</html>
