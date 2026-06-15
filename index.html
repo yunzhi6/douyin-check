@@ -60,9 +60,11 @@
     <label>粘贴抖音作品链接</label>
     <input type="text" id="dy-link" placeholder="例：https://v.douyin.com/xxxxxx/" />
     <div class="btns">
+      <button class="primary" id="auto-extract">一键自动提取</button>
       <button id="copy-link">复制链接</button>
     </div>
-    <label style="margin-top:14px;">免费提取入口（点开任意一个，粘链接提取，再把文字填到下面第2步）</label>
+    <div class="hint" id="auto-status" style="display:none;"></div>
+    <label style="margin-top:14px;">或用免费网页提取（点开任意一个，粘链接提取，再把文字填到下面第2步）</label>
     <div class="btns">
       <a class="btn" href="https://www.qingdou.vip/pctool/text-extract" target="_blank" rel="noopener">轻抖 ↗</a>
       <a class="btn" href="https://www.anytocopy.com/" target="_blank" rel="noopener">AnyToCopy ↗</a>
@@ -190,6 +192,34 @@
   document.getElementById('copy-link').onclick=function(){
     var v=document.getElementById('dy-link').value;
     if(v&&navigator.clipboard){navigator.clipboard.writeText(v);this.textContent='已复制';var t=this;setTimeout(function(){t.textContent='复制链接';},1200);}
+  };
+
+  var EXTRACT_API="https://snitch-sternum-drab.ngrok-free.dev/api/extract";
+  var ax=document.getElementById('auto-extract');
+  var axStatus=document.getElementById('auto-status');
+  function setStatus(msg,color){axStatus.style.display='block';axStatus.innerHTML=msg;axStatus.style.color=color||'var(--mut)';}
+  ax.onclick=function(){
+    var link=(document.getElementById('dy-link').value||'').trim();
+    if(!link){setStatus('先把抖音链接粘到上面','var(--danger)');return;}
+    ax.disabled=true;ax.textContent='提取中…约1分钟';
+    setStatus('正在调用 Get笔记 转写，约 30–90 秒，请稍候…');
+    fetch(EXTRACT_API,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},body:JSON.stringify({link:link})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        ax.disabled=false;ax.textContent='一键自动提取';
+        if(d&&d.ok){
+          if(d.title)document.getElementById('in-title').value=d.title;
+          document.getElementById('in-body').value=(d.transcript&&d.transcript.length>10)?d.transcript:(d.content||'');
+          setStatus('✅ 已提取并填入下面，正在自动检测…','var(--ok)');
+          run();
+        } else {
+          setStatus('提取失败：'+((d&&d.error)||'未知')+'。可改用下面的免费网页提取，或稍后重试。','var(--danger)');
+        }
+      })
+      .catch(function(e){
+        ax.disabled=false;ax.textContent='一键自动提取';
+        setStatus('连不上提取服务（可能电脑/隧道没开）。可改用下面的免费网页提取。','var(--danger)');
+      });
   };
 
   var A=["九华山黄精","老祖宗的好食材","药食同源的黄精","自己人的口粮黄精","正宗九华山多花黄精"];
