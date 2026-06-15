@@ -199,8 +199,10 @@
   var axStatus=document.getElementById('auto-status');
   function setStatus(msg,color){axStatus.style.display='block';axStatus.innerHTML=msg;axStatus.style.color=color||'var(--mut)';}
   ax.onclick=function(){
-    var link=(document.getElementById('dy-link').value||'').trim();
-    if(!link){setStatus('先把抖音链接粘到上面','var(--danger)');return;}
+    var raw=(document.getElementById('dy-link').value||'').trim();
+    var m=raw.match(/https?:\/\/[^\s，,、。)）】]+/);
+    var link=m?m[0]:raw;
+    if(!m){setStatus('没找到链接，请粘贴含 http 链接的抖音分享内容','var(--danger)');return;}
     ax.disabled=true;ax.textContent='提取中…约1分钟';
     setStatus('正在调用 Get笔记 转写，约 30–90 秒，请稍候…');
     fetch(EXTRACT_API,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},body:JSON.stringify({link:link})})
