@@ -58,8 +58,8 @@
 
   <div class="card">
     <div class="step"><span class="num">1</span>提取抖音文字</div>
-    <label>粘贴抖音作品链接（整段分享文案也行，会自动抠出链接）</label>
-    <input type="text" id="dy-link" placeholder="例：3.30 复制打开抖音… https://v.douyin.com/xxxx/" />
+    <label>输入抖音网址 or 文字内容（网址→自动提取逐字稿；文字→直接检测）</label>
+    <input type="text" id="dy-link" placeholder="输入抖音网址 or 文字内容" />
     <div class="btns">
       <button class="primary" id="auto-extract">一键自动提取并检测</button>
       <button id="copy-link">复制链接</button>
@@ -173,8 +173,10 @@
   function setStatus(msg,color){axStatus.style.display='block';axStatus.innerHTML=msg;axStatus.style.color=color||'var(--mut)';}
   ax.onclick=function(){
     var raw=(document.getElementById('dy-link').value||'').trim();
-    var m=raw.match(/https?:\/\/[^\s，,、。)）】]+/);var link=m?m[0]:raw;
-    if(!m){setStatus('没找到链接，请粘贴含 http 链接的抖音分享内容','var(--danger)');return;}
+    if(!raw){setStatus('请输入抖音网址，或粘贴文字内容','var(--danger)');return;}
+    var m=raw.match(/https?:\/\/[^\s，,、。)）】]+/);
+    if(!m){document.getElementById('f-body').innerText=raw;setStatus('已识别为文字内容，直接检测 ↓','var(--ok)');run();return;}
+    var link=m[0];
     ax.disabled=true;ax.textContent='提取中…约1分钟';
     setStatus('正在调用 Get笔记 转写逐字稿，约 30–90 秒，请稍候…');
     fetch(EXTRACT_API,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},body:JSON.stringify({link:link})})
