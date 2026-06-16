@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>短视频带货·文案违规检测</title>
 <style>
-  :root{
-    --bg:#f5f6f8; --card:#ffffff; --line:#e6e8ec; --ink:#1c1f23; --mut:#6b7178;
-    --brand:#2b6cf6; --brand-d:#1a4fd0; --danger:#d83a3a; --ok:#1f9a6d; --ok-bg:#e6f6ef; --danger-bg:#fdeaea;
-  }
+  :root{--bg:#f5f6f8;--card:#ffffff;--line:#e6e8ec;--ink:#1c1f23;--mut:#6b7178;--brand:#2b6cf6;--brand-d:#1a4fd0;--danger:#d83a3a;--ok:#1f9a6d;--ok-bg:#e6f6ef;--danger-bg:#fdeaea;}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;}
   .wrap{max-width:820px;margin:0 auto;padding:18px 16px 60px;}
@@ -19,9 +16,8 @@
   .step{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;margin-bottom:10px;}
   .num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;align-items:center;justify-content:center;font-size:13px;}
   label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px;}
-  input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;background:#fbfbfc;color:var(--ink);}
-  textarea{resize:vertical;}
-  input:focus,textarea:focus{outline:none;border-color:var(--brand);background:#fff;}
+  input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;background:#fbfbfc;color:var(--ink);}
+  input:focus{outline:none;border-color:var(--brand);background:#fff;}
   .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   button,a.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit;}
   button:hover,a.btn:hover{background:#f0f2f5;}
@@ -29,22 +25,24 @@
   button.primary:hover{background:var(--brand-d);}
   .hint{font-size:12.5px;color:var(--mut);margin-top:8px;}
   .legend{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;}
-  .lg{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:500;}
+  .lg{font-size:12px;padding:3px 10px;border-radius:20px;font-weight:500;color:#1c1f23;}
+  .disp{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;background:#fbfbfc;color:var(--ink);min-height:44px;white-space:pre-wrap;line-height:1.9;outline:none;}
+  .disp:focus{border-color:var(--brand);background:#fff;}
+  .disp.body{min-height:160px;}
+  .disp:empty:before{content:attr(data-ph);color:#aaa;}
   .verdict{padding:12px 14px;border-radius:10px;font-size:15px;margin-top:12px;display:none;}
   .v-ok{background:var(--ok-bg);color:var(--ok);}
   .v-bad{background:var(--danger-bg);color:var(--danger);}
   .hits{margin-top:6px;display:none;}
   .row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-top:1px solid var(--line);flex-wrap:wrap;}
   .word{font-size:16px;font-weight:600;min-width:60px;}
-  .tag{font-size:12px;padding:2px 9px;border-radius:20px;white-space:nowrap;font-weight:500;}
+  .tag{font-size:12px;padding:2px 9px;border-radius:20px;white-space:nowrap;font-weight:500;color:#1c1f23;}
   .cnt{font-size:13px;color:var(--mut);}
   .reps{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
   .rep{font-size:13px;color:var(--brand);cursor:pointer;border:1px solid #d4e0fb;background:#f3f7ff;padding:3px 10px;border-radius:8px;}
   .rep:hover{background:#e3edff;}
   .rep.del{color:var(--danger);border-color:#f3cccc;background:#fdf1f1;}
-  .echo{margin-top:12px;display:none;}
-  .echo .eh{font-size:12px;color:var(--mut);margin:8px 0 4px;}
-  .echo .et{padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfbfc;font-size:15px;white-space:pre-wrap;line-height:1.9;}
+  .rep.bi{color:#7a4f00;border-color:#f0d9a8;background:#fbf3e0;}
   mark{padding:1px 2px;border-radius:3px;font-weight:500;}
   footer{text-align:center;color:var(--mut);font-size:12px;margin-top:24px;line-height:1.7;}
   .gen-out{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfbfc;font-size:15px;min-height:24px;}
@@ -55,7 +53,7 @@
 <div class="wrap">
   <header>
     <h1>短视频带货 · 文案违规检测</h1>
-    <p>按抖音最新规则检测 · 功效/医疗夸大专项 · 分类高亮 + 一键替换</p>
+    <p>按抖音最新规则检测 · 分类高亮 · 规避词 / 删除 / 哔--掉 建议</p>
   </header>
 
   <div class="card">
@@ -63,11 +61,11 @@
     <label>粘贴抖音作品链接（整段分享文案也行，会自动抠出链接）</label>
     <input type="text" id="dy-link" placeholder="例：3.30 复制打开抖音… https://v.douyin.com/xxxx/" />
     <div class="btns">
-      <button class="primary" id="auto-extract">一键自动提取</button>
+      <button class="primary" id="auto-extract">一键自动提取并检测</button>
       <button id="copy-link">复制链接</button>
     </div>
     <div class="hint" id="auto-status" style="display:none;"></div>
-    <label style="margin-top:14px;">或用免费网页提取（点开任意一个，粘链接提取，再把文字填到下面第2步）</label>
+    <label style="margin-top:14px;">或用免费网页提取（提取后把文字粘到下面对应框，点重新检测）</label>
     <div class="btns">
       <a class="btn" href="https://www.qingdou.vip/pctool/text-extract" target="_blank" rel="noopener">轻抖 ↗</a>
       <a class="btn" href="https://www.anytocopy.com/" target="_blank" rel="noopener">AnyToCopy ↗</a>
@@ -77,26 +75,22 @@
   </div>
 
   <div class="card">
-    <div class="step"><span class="num">2</span>违规检测</div>
-    <label>标题 / 描述</label>
-    <textarea id="in-title" rows="2" placeholder="作品标题/描述粘这里"></textarea>
-    <label>话题标签（#）</label>
-    <textarea id="in-desc" rows="2" placeholder="#标签 粘这里"></textarea>
-
-    <label style="margin-top:12px;">违规词分类（检测后逐字稿里会用对应颜色高亮）</label>
+    <div class="step"><span class="num">2</span>违规检测（违规词按类别高亮，可直接编辑）</div>
     <div class="legend" id="legend"></div>
-    <label>口播逐字稿（一键提取会自动填——最容易藏违规词）</label>
-    <textarea id="in-body" rows="6" placeholder="把口播逐字稿粘这里"></textarea>
-
+    <label>标题 / 描述</label>
+    <div id="f-title" class="disp" contenteditable="true" data-ph="作品标题/描述"></div>
+    <label>话题标签（#）</label>
+    <div id="f-tags" class="disp" contenteditable="true" data-ph="#标签"></div>
+    <label>口播逐字稿（一键提取自动填——最容易藏违规词）</label>
+    <div id="f-body" class="disp body" contenteditable="true" data-ph="口播逐字稿"></div>
     <div class="btns">
-      <button class="primary" id="check">开始检测</button>
+      <button class="primary" id="check">重新检测</button>
       <button id="fix-all">一键全部替换</button>
       <button id="clear">清空</button>
     </div>
     <div class="verdict" id="verdict"></div>
     <div class="meta" id="meta" style="display:none;"></div>
     <div class="hits" id="hits"></div>
-    <div class="echo" id="echo"></div>
   </div>
 
   <div class="card">
@@ -110,97 +104,68 @@
   </div>
 
   <footer>
-    本工具按公开规则做关键词初筛，不代表平台最终判定，最终以抖音审核为准。<br>
-    所售为食品/保健食品，非药品，不替代医疗，请均衡饮食、理性消费。
+    替换说明：能用<b>拼音/同音字</b>规避的给规避词；功效、承诺等硬伤无法规避——能顺畅删掉的标「删除」，删了影响衔接的标「哔--掉」(建议消音/打码)。<br>
+    本工具按公开规则初筛，最终以抖音审核为准。功效/医疗类建议真删或消音，既合规也对消费者负责。
   </footer>
 </div>
 
 <script>
 (function(){
   var CATS={
-    "功效医疗":{bg:"#ff6b6b",fg:"#1c1f23"},
-    "极限词":  {bg:"#ffa94d",fg:"#1c1f23"},
-    "诱导逼单":{bg:"#b197fc",fg:"#1c1f23"},
-    "虚假承诺":{bg:"#ff8cc3",fg:"#1c1f23"},
-    "资质夸大":{bg:"#69db7c",fg:"#1c1f23"},
-    "平台导流":{bg:"#74c0fc",fg:"#1c1f23"},
-    "投资金融":{bg:"#38d9c0",fg:"#1c1f23"},
-    "隐私敏感":{bg:"#ffe066",fg:"#1c1f23"}
+    "功效医疗":{bg:"#ff6b6b"},"极限词":{bg:"#ffa94d"},"诱导逼单":{bg:"#b197fc"},"虚假承诺":{bg:"#ff8cc3"},
+    "资质夸大":{bg:"#69db7c"},"平台导流":{bg:"#74c0fc"},"投资金融":{bg:"#38d9c0"},"隐私敏感":{bg:"#ffe066"}
   };
-  // [词, 类别, [替换建议... "删除"=直接删掉]]
+  var DEL="删除",BI="哔--掉";
+  // [词, 类别, [建议... 拼音/同音 或 删除 或 哔--掉]]
   var DICT=[
-    ["治疗","功效医疗",["删除"]],["治愈","功效医疗",["删除"]],["根治","功效医疗",["删除"]],["包治","功效医疗",["删除"]],["专治","功效医疗",["删除"]],["特效","功效医疗",["删除"]],["疗效","功效医疗",["删除"]],["功效","功效医疗",["删除","好处"]],["某功某效","功效医疗",["删除"]],["药效","功效医疗",["删除"]],["药用","功效医疗",["删除","食用"]],["壮阳","功效医疗",["删除"]],["补肾","功效医疗",["删除"]],["肾虚","功效医疗",["删除"]],["降血压","功效医疗",["删除"]],["降血糖","功效医疗",["删除"]],["降血脂","功效医疗",["删除"]],["降三高","功效医疗",["删除"]],["三高","功效医疗",["删除"]],["消炎","功效医疗",["删除"]],["杀菌","功效医疗",["删除"]],["抗菌","功效医疗",["删除"]],["排毒","功效医疗",["删除"]],["减肥","功效医疗",["删除","控制饮食"]],["瘦身","功效医疗",["删除"]],["增强免疫","功效医疗",["删除"]],["提高免疫力","功效医疗",["删除"]],["免疫力","功效医疗",["删除"]],["助眠","功效医疗",["删除"]],["失眠","功效医疗",["删除"]],["生发","功效医疗",["删除"]],["祛斑","功效医疗",["删除"]],["美白","功效医疗",["删除"]],["抗癌","功效医疗",["删除"]],["防癌","功效医疗",["删除"]],["抗衰老","功效医疗",["删除"]],["延缓衰老","功效医疗",["删除"]],["止痛","功效医疗",["删除"]],["活血","功效医疗",["删除"]],["去火","功效医疗",["删除"]],["降火","功效医疗",["删除"]],["祛湿","功效医疗",["删除"]],["养胃","功效医疗",["删除"]],["养肝","功效医疗",["删除"]],["护肝","功效医疗",["删除"]],["养肾","功效医疗",["删除"]],["补气","功效医疗",["删除"]],["补血","功效医疗",["删除"]],["大补","功效医疗",["删除"]],["滋补","功效医疗",["删除","日常吃"]],["调理","功效医疗",["删除","搭配"]],["修复","功效医疗",["删除"]],["缓解","功效医疗",["删除"]],["改善","功效医疗",["删除","帮助"]],["替代药物","功效医疗",["删除"]],["无副作用","功效医疗",["删除"]],["无毒副作用","功效医疗",["删除"]],
-    ["最好","极限词",["很好","优选"]],["最佳","极限词",["优选"]],["最高","极限词",["较高"]],["最低","极限词",["较低"]],["最便宜","极限词",["实惠"]],["最强","极限词",["出色"]],["最重要","极限词",["重要"]],["最","极限词",["非常","十分"]],["第一","极限词",["领先","靠前"]],["唯一","极限词",["少有"]],["顶级","极限词",["优质"]],["顶尖","极限词",["优质"]],["极致","极限词",["出色"]],["世界级","极限词",["高端"]],["国家级","极限词",["高端"]],["永久","极限词",["长期"]],["绝对","极限词",["确实"]],["100%","极限词",["几乎"]],["百分百","极限词",["几乎"]],["百分之百","极限词",["几乎"]],["无敌","极限词",["出色"]],["销量第一","极限词",["销量靠前"]],["全网最低","极限词",["价格实惠"]],
-    ["秒杀","诱导逼单",["限时优惠"]],["抢疯了","诱导逼单",["很受欢迎"]],["抢爆","诱导逼单",["很受欢迎"]],["再不抢就没了","诱导逼单",["数量有限"]],["错过就没了","诱导逼单",["数量有限"]],["错过再等一年","诱导逼单",["机会难得"]],["错过了真的就没有了","诱导逼单",["数量有限"]],["万人疯抢","诱导逼单",["很多人选"]],["限时","诱导逼单",["优惠"]],["立即","诱导逼单",["现在"]],["马上","诱导逼单",["现在"]],["立刻","诱导逼单",["现在"]],["赶紧","诱导逼单",["建议"]],["不要急着拍","诱导逼单",["可以了解下"]],["机制错过","诱导逼单",["数量有限"]],
-    ["稳赚","虚假承诺",["有机会"]],["稳赚不赔","虚假承诺",["请理性"]],["保本","虚假承诺",["请理性"]],["零风险","虚假承诺",["请理性"]],["闭眼入","虚假承诺",["可以考虑"]],["无脑买","虚假承诺",["可以考虑"]],["假一赔十","虚假承诺",["正品保障"]],["放心大胆吃","虚假承诺",["日常食用"]],["放心大胆","虚假承诺",["放心"]],["保证","虚假承诺",["努力做到"]],
-    ["有机","资质夸大",["天然种植","生态培育"]],["古法炮制","资质夸大",["传统工艺","经典制作"]],["古法","资质夸大",["传统"]],["纯天然","资质夸大",["天然"]],["无添加","资质夸大",["配料简单"]],["正宗","资质夸大",["地道"]],["国宴","资质夸大",["删除"]],["宫廷","资质夸大",["删除"]],["驰名商标","资质夸大",["删除"]],["质量免检","资质夸大",["删除"]],["专利","资质夸大",["删除"]],["认证","资质夸大",["精选"]],["药典","资质夸大",["传统记载"]],["药历","资质夸大",["老讲究"]],["农药","资质夸大",["种植"]],
-    ["抖音","平台导流",["平台","走音"]],["直播间","平台导流",["这里","啵啵间"]],["微信","平台导流",["威信"]],["薅羊毛","平台导流",["优惠攻略","优惠套利"]],["羊毛","平台导流",["优惠"]],["加我","平台导流",["关注我"]],["私信","平台导流",["联系"]],["点击链接","平台导流",["看下方"]],["点开这个链接","平台导流",["看下方"]],["立即购买","平台导流",["选购"]],["二维码","平台导流",["删除"]],["豆包","平台导流",["删除","自己了解"]],
-    ["股票","投资金融",["删除"]],["基金","投资金融",["删除"]],["期货","投资金融",["删除"]],["理财","投资金融",["删除"]],["年化","投资金融",["删除"]],["收益率","投资金融",["删除"]],["一夜暴富","投资金融",["删除"]],["月入过万","投资金融",["删除"]],["轻松赚钱","投资金融",["删除"]],["躺赚","投资金融",["删除"]],["暴富","投资金融",["删除"]],
-    ["身份证","隐私敏感",["删除"]],["手机号","隐私敏感",["删除"]],["电话号码","隐私敏感",["删除"]],["银行卡","隐私敏感",["删除"]],["车牌","隐私敏感",["删除"]],["家庭住址","隐私敏感",["删除"]]
+    ["治疗","功效医疗",[BI]],["治愈","功效医疗",[BI]],["根治","功效医疗",[BI]],["包治","功效医疗",[BI]],["专治","功效医疗",[BI]],["特效","功效医疗",[BI]],["疗效","功效医疗",[BI]],["功效","功效医疗",[BI]],["某功某效","功效医疗",[BI]],["药效","功效医疗",[BI]],["药用","功效医疗",[DEL]],["壮阳","功效医疗",[BI]],["补肾","功效医疗",[BI]],["肾虚","功效医疗",[BI]],["降血压","功效医疗",[BI]],["降血糖","功效医疗",[BI]],["降血脂","功效医疗",[BI]],["降三高","功效医疗",[BI]],["三高","功效医疗",[BI]],["消炎","功效医疗",[BI]],["杀菌","功效医疗",[BI]],["抗菌","功效医疗",[BI]],["排毒","功效医疗",[BI]],["减肥","功效医疗",[DEL]],["瘦身","功效医疗",[DEL]],["增强免疫","功效医疗",[BI]],["提高免疫力","功效医疗",[BI]],["免疫力","功效医疗",[BI]],["助眠","功效医疗",[BI]],["失眠","功效医疗",[DEL]],["生发","功效医疗",[BI]],["祛斑","功效医疗",[BI]],["美白","功效医疗",[DEL]],["抗癌","功效医疗",[BI]],["防癌","功效医疗",[BI]],["抗衰老","功效医疗",[BI]],["延缓衰老","功效医疗",[BI]],["止痛","功效医疗",[BI]],["活血","功效医疗",[BI]],["去火","功效医疗",[DEL]],["降火","功效医疗",[DEL]],["祛湿","功效医疗",[BI]],["养胃","功效医疗",[DEL]],["养肝","功效医疗",[DEL]],["护肝","功效医疗",[DEL]],["养肾","功效医疗",[DEL]],["补气","功效医疗",[DEL]],["补血","功效医疗",[DEL]],["大补","功效医疗",[DEL]],["滋补","功效医疗",[DEL]],["调理","功效医疗",[DEL]],["修复","功效医疗",[BI]],["缓解","功效医疗",[BI]],["改善","功效医疗",[DEL]],["替代药物","功效医疗",[BI]],["无副作用","功效医疗",[BI]],["无毒副作用","功效医疗",[BI]],
+    ["最好","极限词",["zui好"]],["最佳","极限词",["zui佳"]],["最高","极限词",["zui高"]],["最低","极限词",["zui低"]],["最便宜","极限词",["zui便宜"]],["最强","极限词",["zui强"]],["最重要","极限词",["zui重要"]],["最","极限词",["zui"]],["第一","极限词",["第1"]],["唯一","极限词",["wei一"]],["顶级","极限词",["顶ji"]],["顶尖","极限词",["顶jian"]],["极致","极限词",["ji致"]],["世界级","极限词",["世界ji"]],["国家级","极限词",["国家ji"]],["永久","极限词",["yong久"]],["绝对","极限词",["jue对"]],["100%","极限词",["100趴"]],["百分百","极限词",["百分bai"]],["百分之百","极限词",["百分之bai"]],["无敌","极限词",["无di"]],["销量第一","极限词",["销量第1"]],["全网最低","极限词",["全网zui低"]],
+    ["秒杀","诱导逼单",["秒sha"]],["抢疯了","诱导逼单",[DEL]],["抢爆","诱导逼单",[DEL]],["再不抢就没了","诱导逼单",[DEL]],["错过就没了","诱导逼单",[DEL]],["错过再等一年","诱导逼单",[DEL]],["错过了真的就没有了","诱导逼单",[DEL]],["机制错过","诱导逼单",[DEL]],["万人疯抢","诱导逼单",[DEL]],["限时","诱导逼单",["xian时"]],["立即","诱导逼单",["li ji"]],["马上","诱导逼单",["ma上"]],["立刻","诱导逼单",["li刻"]],["赶紧","诱导逼单",[DEL]],["不要急着拍","诱导逼单",[DEL]],
+    ["稳赚","虚假承诺",[BI]],["稳赚不赔","虚假承诺",[BI]],["保本","虚假承诺",[BI]],["零风险","虚假承诺",[BI]],["闭眼入","虚假承诺",[DEL]],["无脑买","虚假承诺",[DEL]],["假一赔十","虚假承诺",[DEL]],["放心大胆吃","虚假承诺",[DEL]],["放心大胆","虚假承诺",[DEL]],["保证","虚假承诺",[DEL]],
+    ["有机","资质夸大",["youji"]],["古法炮制","资质夸大",["古法pao制"]],["古法","资质夸大",["古fa"]],["纯天然","资质夸大",["纯天ran"]],["无添加","资质夸大",["无添jia"]],["正宗","资质夸大",["正zong"]],["国宴","资质夸大",[DEL]],["宫廷","资质夸大",[DEL]],["驰名商标","资质夸大",[DEL]],["质量免检","资质夸大",[DEL]],["专利","资质夸大",[DEL]],["认证","资质夸大",["ren证"]],["药典","资质夸大",["yao典"]],["药历","资质夸大",["yao历"]],["农药","资质夸大",["农yao"]],
+    ["抖音","平台导流",["斗音"]],["直播间","平台导流",["直bo间"]],["微信","平台导流",["V信"]],["薅羊毛","平台导流",["薅yang毛"]],["羊毛","平台导流",["yang毛"]],["加我","平台导流",["jia我"]],["私信","平台导流",["si信"]],["点击链接","平台导流",["点击lian接"]],["点开这个链接","平台导流",["看下方"]],["立即购买","平台导流",["li ji购买"]],["二维码","平台导流",["二wei码"]],["豆包","平台导流",["豆bao"]],
+    ["股票","投资金融",[BI]],["基金","投资金融",[BI]],["期货","投资金融",[BI]],["理财","投资金融",[BI]],["年化","投资金融",[DEL]],["收益率","投资金融",[DEL]],["一夜暴富","投资金融",[DEL]],["月入过万","投资金融",[DEL]],["轻松赚钱","投资金融",[DEL]],["躺赚","投资金融",[DEL]],["暴富","投资金融",[DEL]],
+    ["身份证","隐私敏感",[BI]],["手机号","隐私敏感",[BI]],["电话号码","隐私敏感",[BI]],["银行卡","隐私敏感",[BI]],["车牌","隐私敏感",[BI]],["家庭住址","隐私敏感",[BI]]
   ];
-  var DEL="删除";
 
-  // 图例
-  (function(){ var L=document.getElementById('legend'); var h='';
-    Object.keys(CATS).forEach(function(k){ var c=CATS[k]; h+='<span class="lg" style="background:'+c.bg+';color:'+c.fg+'">'+k+'</span>'; });
-    L.innerHTML=h;
-  })();
+  (function(){var L=document.getElementById('legend'),h='';Object.keys(CATS).forEach(function(k){h+='<span class="lg" style="background:'+CATS[k].bg+'">'+k+'</span>';});L.innerHTML=h;})();
 
-  function fields(){return ["in-title","in-desc","in-body"].map(function(id){return document.getElementById(id);});}
-  function allText(){return fields().map(function(e){return e.value||"";}).join("\n");}
+  function divs(){return [document.getElementById('f-title'),document.getElementById('f-tags'),document.getElementById('f-body')];}
+  function allText(){return divs().map(function(d){return d.innerText||"";}).join("\n");}
   function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
 
-  function scan(){
-    var text=allText();var found=[];
-    DICT.forEach(function(d){var w=d[0],n=0,idx=0;while((idx=text.indexOf(w,idx))>=0){n++;idx+=w.length;}
-      if(n>0) found.push({word:w,cat:d[1],reps:d[2],count:n});});
-    found.sort(function(a,b){if(b.word.length!==a.word.length)return b.word.length-a.word.length;return b.count-a.count;});
-    return found;
-  }
+  function scan(){var text=allText(),found=[];DICT.forEach(function(d){var w=d[0],n=0,idx=0;while((idx=text.indexOf(w,idx))>=0){n++;idx+=w.length;}if(n>0)found.push({word:w,cat:d[1],reps:d[2],count:n});});found.sort(function(a,b){if(b.word.length!==a.word.length)return b.word.length-a.word.length;return b.count-a.count;});return found;}
 
-  function highlight(text){
-    if(!text) return "";
-    var words=DICT.map(function(d){return {w:d[0],cat:d[1]};}).filter(function(o){return text.indexOf(o.w)>=0;});
-    words.sort(function(a,b){return b.w.length-a.w.length;});
-    var out=esc(text);var toks=[];
-    words.forEach(function(o,i){var t=""+i+"";if(out.indexOf(esc(o.w))<0)return;
-      out=out.split(esc(o.w)).join(t);
-      var c=CATS[o.cat];toks.push({t:t,html:'<mark style="background:'+c.bg+';color:'+c.fg+'">'+esc(o.w)+'</mark>'});});
-    toks.forEach(function(x){out=out.split(x.t).join(x.html);});
-    return out;
-  }
+  function highlight(text){if(!text)return "";var ws=DICT.map(function(d){return{w:d[0],cat:d[1]};}).filter(function(o){return text.indexOf(o.w)>=0;});ws.sort(function(a,b){return b.w.length-a.w.length;});var out=esc(text),toks=[];ws.forEach(function(o,i){var t=""+i+"";if(out.indexOf(esc(o.w))<0)return;out=out.split(esc(o.w)).join(t);toks.push({t:t,html:'<mark style="background:'+CATS[o.cat].bg+'">'+esc(o.w)+'</mark>'});});toks.forEach(function(x){out=out.split(x.t).join(x.html);});return out;}
 
-  function applyReplace(word,rep){var to=(rep===DEL)?"":rep;
-    fields().forEach(function(e){if(e.value.indexOf(word)>=0)e.value=e.value.split(word).join(to);});run();}
+  function repTo(rep){return rep===DEL?"":(rep===BI?"哔——":rep);}
+  function applyReplace(word,rep){var to=repTo(rep);divs().forEach(function(d){var t=d.innerText;if(t.indexOf(word)>=0)d.innerText=t.split(word).join(to);});run();}
 
   function run(){
-    var verdict=document.getElementById('verdict'),meta=document.getElementById('meta'),hits=document.getElementById('hits'),echo=document.getElementById('echo');
-    if(!allText().trim()){verdict.style.display='block';verdict.className='verdict v-bad';verdict.textContent='先粘点文案进来再检测';meta.style.display='none';hits.style.display='none';echo.style.display='none';return;}
+    var verdict=document.getElementById('verdict'),meta=document.getElementById('meta'),hits=document.getElementById('hits');
+    if(!allText().trim()){verdict.style.display='block';verdict.className='verdict v-bad';verdict.textContent='先粘点文案进来再检测';meta.style.display='none';hits.style.display='none';return;}
     var found=scan();
     verdict.style.display='block';
     if(found.length===0){verdict.className='verdict v-ok';verdict.innerHTML='✅ 没扫到违规词，相对安全，可以发。（仍以平台审核为准）';meta.style.display='none';hits.style.display='none';}
     else{
       verdict.className='verdict v-bad';
-      verdict.innerHTML='⚠️ 检出 <b>'+found.length+'</b> 类风险词，点右侧「替换」逐个换掉，或上面「一键全部替换」。下方逐字稿已按类别高亮。';
-      meta.style.display='flex';
-      meta.innerHTML='<span>共 '+found.length+' 类</span><span>检查字数：'+allText().replace(/\s/g,'').length+' 字</span>';
+      verdict.innerHTML='⚠️ 检出 <b>'+found.length+'</b> 类风险词，上方逐字稿已按类别高亮。点右侧建议替换：<b style="color:#15568f">蓝=拼音/同音规避</b>、<b style="color:#d83a3a">红=删除</b>、<b style="color:#7a4f00">黄=哔--掉(消音)</b>。';
+      meta.style.display='flex';meta.innerHTML='<span>共 '+found.length+' 类</span><span>检查字数：'+allText().replace(/\s/g,'').length+' 字</span>';
       var html='';
-      found.forEach(function(f){var c=CATS[f.cat];
-        var reps=f.reps.map(function(r){if(r===DEL)return '<span class="rep del" data-w="'+f.word+'" data-r="'+DEL+'">删除</span>';return '<span class="rep" data-w="'+f.word+'" data-r="'+r+'">'+r+'</span>';}).join('');
-        html+='<div class="row"><span class="word">'+f.word+'</span><span class="tag" style="background:'+c.bg+';color:'+c.fg+'">'+f.cat+'</span><span class="cnt">×'+f.count+'</span><span class="reps">'+reps+'</span></div>';});
+      found.forEach(function(f){var bg=CATS[f.cat].bg;
+        var reps=f.reps.map(function(r){var cls=r===DEL?'rep del':(r===BI?'rep bi':'rep');return '<span class="'+cls+'" data-w="'+f.word+'" data-r="'+r+'">'+r+'</span>';}).join('');
+        html+='<div class="row"><span class="word">'+f.word+'</span><span class="tag" style="background:'+bg+'">'+f.cat+'</span><span class="cnt">×'+f.count+'</span><span class="reps">'+reps+'</span></div>';});
       hits.innerHTML=html;hits.style.display='block';
       Array.prototype.forEach.call(hits.querySelectorAll('.rep'),function(b){b.onclick=function(){applyReplace(b.getAttribute('data-w'),b.getAttribute('data-r'));};});
     }
-    // 高亮预览（标题/描述/口播分别显示，有内容才显示）
-    var eh='';var map=[["标题/描述","in-title"],["话题标签","in-desc"],["口播逐字稿","in-body"]];
-    map.forEach(function(m){var v=document.getElementById(m[1]).value;if(v&&v.trim())eh+='<div class="eh">'+m[0]+'</div><div class="et">'+highlight(v)+'</div>';});
-    if(eh){echo.innerHTML=eh;echo.style.display='block';}else{echo.style.display='none';}
+    // 把高亮渲染回三个显示区
+    divs().forEach(function(d){var t=d.innerText;d.innerHTML=highlight(t);});
   }
 
   document.getElementById('check').onclick=run;
-  document.getElementById('fix-all').onclick=function(){var found=scan();if(!found.length){run();return;}
-    found.forEach(function(f){var rep=f.reps[0],to=(rep===DEL)?"":rep;fields().forEach(function(e){if(e.value.indexOf(f.word)>=0)e.value=e.value.split(f.word).join(to);});});run();};
-  document.getElementById('clear').onclick=function(){fields().forEach(function(e){e.value='';});['verdict','meta','hits','echo'].forEach(function(id){document.getElementById(id).style.display='none';});};
+  divs().forEach(function(d){d.addEventListener('blur',function(){run();});});
+  document.getElementById('fix-all').onclick=function(){var found=scan();if(!found.length){run();return;}found.forEach(function(f){var to=repTo(f.reps[0]);divs().forEach(function(d){var t=d.innerText;if(t.indexOf(f.word)>=0)d.innerText=t.split(f.word).join(to);});});run();};
+  document.getElementById('clear').onclick=function(){divs().forEach(function(d){d.innerHTML='';});['verdict','meta','hits'].forEach(function(id){document.getElementById(id).style.display='none';});};
   document.getElementById('copy-link').onclick=function(){var v=document.getElementById('dy-link').value;if(v&&navigator.clipboard){navigator.clipboard.writeText(v);this.textContent='已复制';var t=this;setTimeout(function(){t.textContent='复制链接';},1200);}};
 
   var EXTRACT_API="https://snitch-sternum-drab.ngrok-free.dev/api/extract";
@@ -213,21 +178,19 @@
     ax.disabled=true;ax.textContent='提取中…约1分钟';
     setStatus('正在调用 Get笔记 转写逐字稿，约 30–90 秒，请稍候…');
     fetch(EXTRACT_API,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},body:JSON.stringify({link:link})})
-      .then(function(r){return r.json();})
-      .then(function(d){ax.disabled=false;ax.textContent='一键自动提取';
-        if(d&&d.ok){var cap=(d.caption||'').trim();var hi=cap.indexOf('#');
-          document.getElementById('in-title').value=(hi>=0?cap.slice(0,hi).trim():cap)||d.title||'';
-          document.getElementById('in-desc').value=hi>=0?cap.slice(hi).trim():'';
-          document.getElementById('in-body').value=(d.transcript&&d.transcript.length>10)?d.transcript:(d.content||'');
-          setStatus('✅ 已提取标题/描述/标签/逐字稿并填入，正在自动检测…','var(--ok)');run();
+      .then(function(r){return r.json();}).then(function(d){ax.disabled=false;ax.textContent='一键自动提取并检测';
+        if(d&&d.ok){var cap=(d.caption||'').trim(),hi=cap.indexOf('#');
+          document.getElementById('f-title').innerText=(hi>=0?cap.slice(0,hi).trim():cap)||d.title||'';
+          document.getElementById('f-tags').innerText=hi>=0?cap.slice(hi).trim():'';
+          document.getElementById('f-body').innerText=(d.transcript&&d.transcript.length>10)?d.transcript:(d.content||'');
+          setStatus('✅ 已提取标题/描述/标签/逐字稿，已自动检测高亮','var(--ok)');run();
         }else{setStatus('提取失败：'+((d&&d.error)||'未知')+'。可改用下面的免费网页提取。','var(--danger)');}})
-      .catch(function(){ax.disabled=false;ax.textContent='一键自动提取';setStatus('连不上提取服务（可能电脑/隧道没开）。可改用下面的免费网页提取。','var(--danger)');});
+      .catch(function(){ax.disabled=false;ax.textContent='一键自动提取并检测';setStatus('连不上提取服务（可能电脑/隧道没开）。可改用下面的免费网页提取。','var(--danger)');});
   };
 
   var A=["九华山黄精","老祖宗的好食材","药食同源的黄精","自己人的口粮黄精","正宗九华山多花黄精"];
   var B=["九蒸九晒","软糯香甜","香甜回甘不剌嗓","古法工艺","每天嚼两块当养生"];
-  var C=["数量有限","源头直发不掺假","卖完这批就没了","限量供应"];
-  var D=["99元6包","自己人价99元6包"];var E=["囤起来！","需要的备上","建议备上","囤起来别犹豫"];
+  var C=["数量有限","源头直发不掺假","卖完这批就没了","限量供应"];var D=["99元6包","自己人价99元6包"];var E=["囤起来！","需要的备上","建议备上","囤起来别犹豫"];
   function pk(a){return a[Math.floor(Math.random()*a.length)];}
   var go=document.getElementById('gen-out');
   function gen(){go.textContent=pk(A)+'，'+pk(B)+'，'+pk(C)+'，'+pk(D)+'，'+pk(E);}
