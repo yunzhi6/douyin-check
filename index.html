@@ -136,7 +136,21 @@
 
   function scan(){var text=allText(),found=[];DICT.forEach(function(d){var w=d[0],n=0,idx=0;while((idx=text.indexOf(w,idx))>=0){n++;idx+=w.length;}if(n>0)found.push({word:w,cat:d[1],reps:d[2],count:n});});found.sort(function(a,b){if(b.word.length!==a.word.length)return b.word.length-a.word.length;return b.count-a.count;});return found;}
 
-  function highlight(text){if(!text)return "";var ws=DICT.map(function(d){return{w:d[0],cat:d[1]};}).filter(function(o){return text.indexOf(o.w)>=0;});ws.sort(function(a,b){return b.w.length-a.w.length;});var out=esc(text),toks=[];ws.forEach(function(o,i){var t=""+i+"";if(out.indexOf(esc(o.w))<0)return;out=out.split(esc(o.w)).join(t);toks.push({t:t,html:'<mark style="background:'+CATS[o.cat].bg+'">'+esc(o.w)+'</mark>'});});toks.forEach(function(x){out=out.split(x.t).join(x.html);});return out;}
+  function highlight(text){
+    if(!text)return "";
+    var present=DICT.filter(function(d){return text.indexOf(d[0])>=0;});
+    if(!present.length)return esc(text);
+    present.sort(function(a,b){return b[0].length-a[0].length;});
+    var map={};present.forEach(function(d){map[d[0]]=d[1];});
+    var pat=present.map(function(d){return d[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|');
+    var re=new RegExp('('+pat+')','g');
+    var parts=text.split(re),out='';
+    for(var i=0;i<parts.length;i++){
+      if(i%2===1){out+='<mark style="background:'+CATS[map[parts[i]]].bg+'">'+esc(parts[i])+'</mark>';}
+      else{out+=esc(parts[i]);}
+    }
+    return out;
+  }
 
   function repTo(rep){return rep===DEL?"":(rep===BI?"哔——":rep);}
   function applyReplace(word,rep){var to=repTo(rep);divs().forEach(function(d){var t=d.innerText;if(t.indexOf(word)>=0)d.innerText=t.split(word).join(to);});run();}
